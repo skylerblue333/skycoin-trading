@@ -1,15 +1,20 @@
 {
-  "name": "skycoin4444-module",
-  "version": "1.0.0",
-  "description": "Production-grade SKYCOIN4444 module",
+  "name": "skycoin4444-trading",
+  "version": "1.1.0",
+  "description": "Verified market-quote domain component for the SKYCOIN4444 ecosystem",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc || echo 'Build completed'",
-    "test": "echo 'Tests passing'",
-    "lint": "echo 'Linting passed'",
+    "build": "tsc --noEmit false",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit",
     "start": "node dist/index.js"
   },
-  "keywords": ["skycoin4444", "production"],
+  "keywords": ["skycoin4444", "trading", "market-data"],
   "author": "SKYCOIN4444",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.9.0",
+    "vitest": "^3.2.0"
+  }
 }
