@@ -1,47 +1,63 @@
-# Skycoin Trading
+# SKYCOIN4444 Market Quotes
 
-Trading and market-data component for the SKYCOIN4444 ecosystem.
+A focused TypeScript library for validating bid/ask quotes and maintaining the latest in-memory quote per symbol. It is a market-data primitive only: it does **not** connect to exchanges, execute orders, custody assets, generate trading signals, or provide investment advice.
 
-## Current implementation
+## Implemented behavior
 
-- TypeScript market-quote domain primitive
-- Bid/ask validation
-- Symbol normalization
-- Mid-price calculation
-- Automated Vitest coverage for valid and invalid quotes
+- normalized market symbols with bounded syntax
+- finite non-negative bid/ask validation
+- rejection of inverted spreads
+- ISO-compatible timestamp validation/normalization
+- midpoint, absolute spread, and spread-basis-point helpers
+- latest-quote storage per symbol
+- rejection of timestamp-regressing updates
+- deterministic symbol ordering
+- stale/missing quote detection
+- strict TypeScript build and Vitest coverage
 
-## Ecosystem role
+## Example
 
-**Wallet / Finance / Marketplace → Trading & Market Data**
+```ts
+import { QuoteBook, midPrice } from "@skycoin4444/market-quotes";
 
-This repository supplies reusable market-domain logic for the canonical SKYCOIN4444 finance/marketplace boundary. It is intentionally not a complete exchange or broker and does not claim to execute live trades.
+const book = new QuoteBook();
+const quote = book.ingest({
+  symbol: "sky4/usd",
+  bid: 10,
+  ask: 10.5,
+  timestamp: "2026-08-24T12:00:00Z",
+});
 
-## Truthful status
+console.log(midPrice(quote));
+console.log(book.isStale("SKY4/USD", 30_000));
+```
 
-- Quote domain: **implemented**
-- Basic tests: **implemented**
-- Canonical finance integration: **pending**
-- Live market-data provider: **not integrated/verified**
-- Order execution: **not claimed**
-- Production deployment: **not verified**
-- Revenue: **not claimed**
+## Verification
 
-The previous package metadata described the repository as production-grade while using placeholder test/lint commands and a build command that suppressed TypeScript failures. Those commands are not evidence of production readiness. fileciteturn253file0
+```bash
+pnpm install --no-frozen-lockfile
+pnpm lint
+pnpm test
+pnpm build
+pnpm audit --prod --audit-level high
+```
 
-## Consolidation and open-source policy
+CI runs those gates on `main`, product branches, and pull requests.
 
-Preserve useful existing work and compare it with the canonical wallet, finance, marketplace, payment, and protocol implementations. Merge the strongest verified market capabilities into the canonical finance boundary instead of maintaining duplicate trading systems.
+## Architecture and integration
 
-When a genuine gap requires substantial exchange, market-data, order-book, or infrastructure functionality, evaluate mature public open-source projects first. Adopt only compatible, maintained components; preserve required licenses/attribution and isolate third-party dependencies behind stable adapters.
+This package should sit behind market-data provider adapters. Provider networking, authentication, retries, rate limits, durable time-series storage, order books, execution, portfolio state, and risk management belong in separate components. SKYCOIN4444 finance/marketplace applications can consume this library through its exported quote contract rather than copying its source.
 
-## Commercial path
+## Status
 
-Potential monetization paths include market-data subscriptions, exchange/platform fees, premium trading features, and marketplace transaction fees. None are represented as active revenue until backed by real customers, transactions, or production telemetry.
+**Classification:** ENGINEERING LAB / beta library.
 
-## Production requirements
+The quote-domain implementation and automated checks can be verified independently. Live provider accuracy, production persistence, exchange connectivity, financial controls, and production deployment are not implemented or claimed.
 
-Before live trading or financial production use, add provider adapters, persistent market data, order lifecycle/state management, authentication and authorization, rate limits, risk controls, idempotency, audit logs, observability, security review, integration tests, and controlled end-to-end deployment verification.
+## Security and financial boundary
+
+Treat external quote feeds as untrusted input. This library validates basic shape and ordering but does not authenticate a data source or establish price correctness. Never use it alone as the basis for executing trades or valuing assets in a production financial system.
 
 ## License
 
-MIT, subject to the checked-in license and applicable third-party dependency licenses.
+MIT, subject to the checked-in license and applicable third-party licenses.
