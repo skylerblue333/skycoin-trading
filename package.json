@@ -1,16 +1,18 @@
 {
-  "name": "skycoin4444-trading",
-  "version": "1.1.0",
-  "description": "Verified market-quote domain component for the SKYCOIN4444 ecosystem",
+  "name": "@skycoin4444/market-quotes",
+  "version": "1.2.0",
+  "description": "Validated market-quote and latest-quote book library for SKYCOIN4444 integrations",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc --noEmit false",
+    "build": "tsc -p tsconfig.json",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "tsc --noEmit",
-    "start": "node dist/index.js"
+    "lint": "tsc --noEmit -p tsconfig.json",
+    "audit": "pnpm audit --prod --audit-level high",
+    "verify": "pnpm lint && pnpm test && pnpm build && pnpm audit"
   },
-  "keywords": ["skycoin4444", "trading", "market-data"],
+  "keywords": ["skycoin4444", "market-data", "quotes"],
   "author": "SKYCOIN4444",
   "license": "MIT",
   "devDependencies": {
